@@ -1,30 +1,30 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const port = 3042;
+const port = 3043;
+const ethers = require('ethers');
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+const provider = new ethers.providers.StaticJsonRpcProvider(process.env.ALCHEMY_MAINNET_URL);
 
 // localhost can have cross origin errors
 // depending on the browser you use!
 app.use(cors());
 app.use(express.json());
 
-const balances = {
-  "1": 100,
-  "2": 50,
-  "3": 75,
-}
-
-app.get('/balance/:address', (req, res) => {
+// Get the Balance of the inputted address
+app.get('/balance/:address', async (req, res) => {
   const {address} = req.params;
-  const balance = balances[address] || 0;
+  const balance = await provider.getBalance(address);
+  console.log(balance);
   res.send({ balance });
 });
 
-app.post('/send', (req, res) => {
-  const {sender, recipient, amount} = req.body;
-  balances[sender] -= amount;
-  balances[recipient] = (balances[recipient] || 0) + +amount;
-  res.send({ balance: balances[sender] });
+// Get latest ETH Block
+app.get('/block/', async (req, res) => {
+  const latestBlock = await provider.getBlock('latest');
+  console.log("Latest Block is:" + latestBlock);
+  res.send({ latestBlock });
 });
 
 app.listen(port, () => {

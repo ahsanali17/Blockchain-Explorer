@@ -1,34 +1,29 @@
 import "./index.scss";
+import axios from "axios";
+const ethers = require('ethers');
+const server = "http://localhost:3043";
 
-const server = "http://localhost:3042";
-
-document.getElementById("exchange-address").addEventListener('input', ({ target: {value} }) => {
+document.getElementById("public-address").addEventListener('input', async ({ target: {value} }) => {
   if(value === "") {
     document.getElementById("balance").innerHTML = 0;
     return;
   }
-
-  fetch(`${server}/balance/${value}`).then((response) => {
-    return response.json();
-  }).then(({ balance }) => {
-    document.getElementById("balance").innerHTML = balance;
-  });
+  
+  const response = await axios.get(`${server}/balance/${value}`);
+  let balance = ethers.utils.formatEther(response.data["balance"]["hex"]);
+  console.log(balance);
+  document.getElementById("balance").innerHTML = balance;
+  
 });
 
-document.getElementById("transfer-amount").addEventListener('click', () => {
-  const sender = document.getElementById("exchange-address").value;
-  const amount = document.getElementById("send-amount").value;
-  const recipient = document.getElementById("recipient").value;
-
-  const body = JSON.stringify({
-    sender, amount, recipient
-  });
-
-  const request = new Request(`${server}/send`, { method: 'POST', body });
-
-  fetch(request, { headers: { 'Content-Type': 'application/json' }}).then(response => {
-    return response.json();
-  }).then(({ balance }) => {
-    document.getElementById("balance").innerHTML = balance;
-  });
+document.getElementById("get-latest").addEventListener('click', async () => {
+  const response = await axios.get(`${server}/block/`);
+  const latestBlock = response.data.latestBlock;
+  console.log(latestBlock);
+  
+  let html = "";  
+  html += `<p> Latest Block Hash: ${latestBlock.hash}</p>` 
+  + `<p> Latest Block Miner: ${latestBlock.miner}</p>` 
+  + `<p> Latest Block Number: ${latestBlock.number}</p>`;
+  document.getElementById("block-information").innerHTML = html;
 });
