@@ -30,12 +30,12 @@ document.getElementById("get-latest").addEventListener('click', async () => {
   // String interpolation with block information held within <p> tags so that we can put the html tags into block-information div
   let block_data = {
     "Block Height":latestBlock.number,
-    "Timestamp":latestBlock.Timestamp,
-    "Transactions":latestBlock.Transactions,
+    "Timestamp":latestBlock.timestamp,
+    "Transactions":latestBlock.transactions.slice(0,1),
     "Mined by":latestBlock.miner,
     "Block Reward":'',
     "Uncles Reward":'',
-    "Difficulty":latestBlock.Difficulty,
+    "Difficulty":latestBlock.difficulty,
     "Total Difficulty":'',
     "Size":latestBlock.Size,
     "Gas Used":'',
@@ -47,7 +47,7 @@ document.getElementById("get-latest").addEventListener('click', async () => {
     "Parent Hash":'',
     "Sha3Uncles":latestBlock.Sha3Uncles,
     "StateRoot":latestBlock.StateRoot,
-    "Nonce":latestBlock.Nonce,
+    "Nonce":latestBlock.nonce,
   };  
   // Looking inside our object to check if all the data is there.  
   console.log("block_data:", block_data)
