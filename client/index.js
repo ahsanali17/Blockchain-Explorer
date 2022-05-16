@@ -28,10 +28,41 @@ document.getElementById("get-latest").addEventListener('click', async () => {
   console.log(latestBlock);
   
   // String interpolation with block information held within <p> tags so that we can put the html tags into block-information div
-  let html = "";  
-  html += `<p> Latest Block Hash: ${latestBlock.hash}</p>` 
-  + `<p> Latest Block Miner: ${latestBlock.miner}</p>` 
-  + `<p> Latest Block Number: ${latestBlock.number}</p>`;
-  // This is what sets the innerHTML to html for block-information div
-  document.getElementById("block-information").innerHTML = html;
+  let block_data = {
+    "Block Height":latestBlock.number,
+    "Timestamp":latestBlock.Timestamp,
+    "Transactions":latestBlock.Transactions,
+    "Mined by":latestBlock.miner,
+    "Block Reward":'',
+    "Uncles Reward":'',
+    "Difficulty":latestBlock.Difficulty,
+    "Total Difficulty":'',
+    "Size":latestBlock.Size,
+    "Gas Used":'',
+    "Gas Limit":'',
+    "Base Fee Per Gas":'',
+    "Burnt Fees":'',
+    "Extra Data":'',
+    "Hash": latestBlock.hash, 
+    "Parent Hash":'',
+    "Sha3Uncles":latestBlock.Sha3Uncles,
+    "StateRoot":latestBlock.StateRoot,
+    "Nonce":latestBlock.Nonce,
+  };  
+  // Looking inside our object to check if all the data is there.  
+  console.log("block_data:", block_data)
+  
+  // We use the Object.keys to grab the keys of our block_data object, then we use a reduce function here to iterate through each object return us a div with its key name and key value
+  
+  // The function was taken from here: https://stackoverflow.com/questions/27266901/display-javascript-object-in-html
+  
+  const generatedHtml = Object.keys(block_data).reduce((accum, currKey, value) => accum + 
+  `
+  <div class="block_item>
+    <div class="item">${value}. ${currKey}: ${block_data[currKey]}</div>
+  </div>
+  `,"");
+  
+  // We pass our generatedHtml to our div id block-information as inner html
+  document.getElementById("block-information").innerHTML = generatedHtml;
 });
